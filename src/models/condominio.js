@@ -1,20 +1,25 @@
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User', {
+const Condominio = mongoose.model('Condominio', {
   name: {
     type: String,
     required: true,
     trim: true,
   },
-  email: {
+  address: {
     type: String,
     required: true,
     trim: true,
   },
-  age: {
+  city: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  number_members: {
     type: Number,
     required: true,
   },
 });
 
-module.exports = User;
+module.exports = Condominio;

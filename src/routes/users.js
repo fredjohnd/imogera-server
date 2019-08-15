@@ -5,10 +5,9 @@ const router = express.Router();
 // Require controller modules.
 const userController = require('../controllers/userController');
 
-// GET User home page.
 router.get('/', userController.user_list);
-router.get('/add', userController.user_add);
-router.get('/delete', userController.user_delete);
+router.post('/add', userController.user_add);
 router.get('/:id', userController.user_detail);
+router.delete('/:id', userController.user_delete);
 
 module.exports = router;
