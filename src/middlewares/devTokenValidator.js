@@ -4,7 +4,7 @@ const PUBLIC_ENDPOINTS = ['/', '/account/login', '/account/register'];
 
 module.exports = async (req, res, next) => {
   // Do not validate endpoints that do not require auth
-  if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) return next();
+  if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) next();
 
   try {
     const { username } = req.headers;
@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
         .send('Header "username" not set or user not found in DB');
     }
     req.decoded = user;
-    return next();
+    next();
   } catch (error) {
     return res.status(403).send({
       error: true,

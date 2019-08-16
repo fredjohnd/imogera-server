@@ -1,30 +1,37 @@
 const HttpStatus = require('http-status-codes');
 const Condominio = require('../models/condominio');
+const moment = require('moment');
+moment.locale('pt-pt');
 
-exports.condominio_list = async function(req, res) {
-  Condominio.find({})
-    .then((data) => {
-      res.send(data);
-    })
-    .catch(() => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
-    });
+exports.condominio_list = async function (req, res) {
+
+  try {
+    const docs = await Condominio.find({});
+    return res.send(docs.map(d => d.toJSON({ hide: 'owner' })));
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+  }
+
 };
 
-exports.condominio_add = function(req, res) {
+exports.condominio_add = async function (req, res) {
   const condominio = new Condominio(req.body);
 
-  condominio
-    .save()
-    .then(() => {
-      res.send(condominio);
-    })
-    .catch((e) => {
-      res.status(HttpStatus.BAD_REQUEST).send(e);
-    });
+  const sessionData = req.decoded;
+
+  condominio.owner = sessionData.id;
+  condominio.created_at = moment().toISOString();
+
+  try {
+    await condominio.save();
+    return res.send(condominio.toJSON({ hide: 'owner' }));
+  } catch (error) {
+    return res.status(HttpStatus.BAD_REQUEST).send(e);
+  }
+
 };
 
-exports.condominio_delete = async function(req, res) {
+exports.condominio_delete = async function (req, res) {
   const { id } = req.params;
 
   try {
@@ -37,13 +44,13 @@ exports.condominio_delete = async function(req, res) {
   }
 };
 
-exports.condominio_detail = async function(req, res) {
+exports.condominio_detail = async function (req, res) {
   const { id } = req.params;
 
   try {
     const doc = await Condominio.findById(id);
     if (!doc) return res.status(HttpStatus.NOT_FOUND).send();
-    return res.send(doc);
+    return res.send(doc.toJSON({ hide: 'owner' }));
   } catch (error) {
     return res
       .status(HttpStatus.NOT_FOUND)

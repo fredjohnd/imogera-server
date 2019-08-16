@@ -3,5 +3,6 @@
   "jscs.enable": false,
   "tslint.enable": false,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "jshint.enable": false
 }

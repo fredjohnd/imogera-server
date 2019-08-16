@@ -1,7 +1,7 @@
 const HttpStatus = require('http-status-codes');
 const User = require('../models/user');
 
-exports.user_list = async function(req, res) {
+exports.user_list = async function (req, res) {
   User.find({})
     .then((users) => {
       res.send(users);
@@ -11,7 +11,7 @@ exports.user_list = async function(req, res) {
     });
 };
 
-exports.user_add = function(req, res) {
+exports.user_add = function (req, res) {
   const user = new User(req.body);
 
   user
@@ -24,7 +24,7 @@ exports.user_add = function(req, res) {
     });
 };
 
-exports.user_delete = function(req, res) {
+exports.user_delete = function (req, res) {
   const { id } = req.params;
 
   User.findByIdAndDelete(id)
@@ -36,7 +36,7 @@ exports.user_delete = function(req, res) {
     });
 };
 
-exports.user_detail = function(req, res) {
+exports.user_detail = function (req, res) {
   const { id } = req.params;
 
   User.findById(id)

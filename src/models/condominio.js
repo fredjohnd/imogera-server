@@ -24,12 +24,17 @@ const Condominio = mongoose.model('Condominio', {
     type: String,
     required: true,
   },
+
+  created_at: {
+    type: String,
+    required: true
+  }
 });
 
 // Removes __v property and any properties passed in options.hide
 const { schema } = Condominio;
 if (!schema.options.toJSON) schema.options.toJSON = {};
-schema.options.toJSON.transform = function(doc, ret, options) {
+schema.options.toJSON.transform = function (doc, ret, options) {
   /* eslint-disable no-underscore-dangle */
   const data = ret;
   delete data.__v;
