@@ -22,6 +22,7 @@ const User = mongoose.model('User', {
   },
 });
 
+// Removes __v and password property and any properties passed in options.hide
 const { schema } = User;
 if (!schema.options.toJSON) schema.options.toJSON = {};
 schema.options.toJSON.transform = function(doc, ret, options) {

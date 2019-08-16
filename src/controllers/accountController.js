@@ -50,7 +50,7 @@ const login = async function(req, res) {
       sessionData: { id: user._id, name: user.name, email: user.email },
     });
 
-    res.append('Authorization', `Bearer: ${token}`);
+    res.append('authorization', `Bearer ${token}`);
     return res.send(user);
     // return res.send(user);
   } catch (error) {
@@ -58,18 +58,9 @@ const login = async function(req, res) {
   }
 };
 
-const logout = async function(req, res) {
-  const tokenValue = req.get('Authorization');
-  if (!tokenValue) res.status(400).send();
-
-  try {
-    const token = tokenValue.split(': ')[1];
-    const tokenData = await verifyJWTToken(token);
-    tokenData.expireTime = new Date(tokenData.exp);
-    return res.send(tokenData);
-  } catch (error) {
-    return res.status(400).send();
-  }
+const logout = function(req, res) {
+  if (!req.decoded) return res.status(401).send('Session invalid');
+  return res.send('User logged out');
 };
 
 const confirm = function(req, res) {

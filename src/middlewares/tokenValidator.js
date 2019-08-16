@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   if (PUBLIC_ENDPOINTS.indexOf(req.originalUrl) !== -1) return next();
 
   try {
-    const token = req.get('Authorization').split(': ')[1];
+    const token = req.headers.authorization.split(' ')[1];
 
     // decode token
     if (token) {

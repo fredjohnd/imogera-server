@@ -9,6 +9,7 @@ require('./db/db');
 const app = express();
 
 app.use(require('./middlewares/headers'));
+
 app.use(require('./middlewares/tokenValidator'));
 
 app.use(express.json());

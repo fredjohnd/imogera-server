@@ -20,6 +20,27 @@ const Condominio = mongoose.model('Condominio', {
     type: Number,
     required: true,
   },
+  owner: {
+    type: String,
+    required: true,
+  },
 });
+
+// Removes __v property and any properties passed in options.hide
+const { schema } = Condominio;
+if (!schema.options.toJSON) schema.options.toJSON = {};
+schema.options.toJSON.transform = function(doc, ret, options) {
+  /* eslint-disable no-underscore-dangle */
+  const data = ret;
+  delete data.__v;
+
+  if (options.hide) {
+    options.hide.split(' ').forEach((prop) => {
+      delete data[prop];
+    });
+  }
+
+  return data;
+};
 
 module.exports = Condominio;

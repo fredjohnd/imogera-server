@@ -24,28 +24,29 @@ exports.condominio_add = function(req, res) {
     });
 };
 
-exports.condominio_delete = function(req, res) {
+exports.condominio_delete = async function(req, res) {
   const { id } = req.params;
 
-  Condominio.findByIdAndDelete(id)
-    .then(() => {
-      res.status(HttpStatus.NO_CONTENT).send();
-    })
-    .catch((e) => {
-      res.status(HttpStatus.BAD_REQUEST).send('Condominio not found');
-    });
+  try {
+    const doc = await Condominio.findByIdAndDelete(id);
+    if (!doc) return res.status(HttpStatus.NOT_FOUND).send();
+
+    return res.status(HttpStatus.NO_CONTENT).send();
+  } catch (error) {
+    return res.status(HttpStatus.BAD_REQUEST).send('Condominio not found');
+  }
 };
 
-exports.condominio_detail = function(req, res) {
+exports.condominio_detail = async function(req, res) {
   const { id } = req.params;
 
-  Condominio.findById(id)
-    .then((data) => {
-      if (!data) {
-        return res.status(HttpStatus.NOT_FOUND).send();
-      }
-
-      return res.send(data);
-    })
-    .catch(() => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send());
+  try {
+    const doc = await Condominio.findById(id);
+    if (!doc) return res.status(HttpStatus.NOT_FOUND).send();
+    return res.send(doc);
+  } catch (error) {
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .send('Condominio not found or no permission.');
+  }
 };
