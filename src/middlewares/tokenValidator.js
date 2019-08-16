@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const PUBLIC_ENDPOINTS = ['/', '/account/login', '/account/register'];
 
 module.exports = (req, res, next) => {
-  console.log(req.path);
   // Do not validate endpoints that do not require auth
   if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) return next();
 
@@ -20,7 +19,7 @@ module.exports = (req, res, next) => {
             .json({ error: true, message: 'Unauthorized access.' });
         }
         req.decoded = decoded;
-        next();
+        return next();
       });
     } else {
       // if there is no token
@@ -36,4 +35,6 @@ module.exports = (req, res, next) => {
       message: 'No token provided.',
     });
   }
+
+  return next();
 };

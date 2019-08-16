@@ -10,7 +10,11 @@ const app = express();
 
 app.use(require('./middlewares/headers'));
 
-app.use(require('./middlewares/tokenValidator'));
+if (process.env.USE_DEV_AUTHENTICATION) {
+  app.use(require('./middlewares/devTokenValidator'));
+} else {
+  app.use(require('./middlewares/tokenValidator'));
+}
 
 app.use(express.json());
 
