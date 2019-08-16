@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 
-const PUBLIC_ENDPOINTS = ['/account/login', '/account/register'];
+const PUBLIC_ENDPOINTS = ['/', '/account/login', '/account/register'];
 
 module.exports = (req, res, next) => {
+  console.log(req.path);
   // Do not validate endpoints that do not require auth
   if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) return next();
 
