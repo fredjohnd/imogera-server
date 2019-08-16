@@ -31,7 +31,7 @@ exports.user_delete = function(req, res) {
     .then(() => {
       res.status(HttpStatus.OK).send('OK');
     })
-    .catch((e) => {
+    .catch(() => {
       res.status(HttpStatus.BAD_REQUEST).send();
     });
 };

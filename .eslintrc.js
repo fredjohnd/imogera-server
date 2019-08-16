@@ -18,5 +18,8 @@ module.exports = {
     'func-names': 0,
     'space-before-function-paren': 0,
     'no-console': 0,
+    'no-tabs': 'error',
+    indent: 0,
+    'object-curly-newline': 0,
   },
 };
