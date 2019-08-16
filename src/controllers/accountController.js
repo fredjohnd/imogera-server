@@ -1,6 +1,7 @@
 const HttpStatus = require('http-status-codes');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const { createJWToken, verifyJWTToken } = require('../libs/auth');
 
 const saltRounds = 10;
 
@@ -43,16 +44,32 @@ const login = async function(req, res) {
     if (!user) return res.send('No user found');
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (isValid) return res.send(user);
+    if (!isValid) res.send('Invalid username/password');
 
-    return res.send('Invalid username/password');
+    const token = createJWToken({
+      sessionData: { id: user._id, name: user.name, email: user.email },
+    });
+
+    res.append('Authorization', `Bearer: ${token}`);
+    return res.send(user);
+    // return res.send(user);
   } catch (error) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
   }
 };
 
-const logout = function(req, res) {
-  res.send('Not Implemented Logout');
+const logout = async function(req, res) {
+  const tokenValue = req.get('Authorization');
+  if (!tokenValue) res.status(400).send();
+
+  try {
+    const token = tokenValue.split(': ')[1];
+    const tokenData = await verifyJWTToken(token);
+    tokenData.expireTime = new Date(tokenData.exp);
+    return res.send(tokenData);
+  } catch (error) {
+    return res.status(400).send();
+  }
 };
 
 const confirm = function(req, res) {

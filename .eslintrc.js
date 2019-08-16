@@ -19,6 +19,7 @@ module.exports = {
     'space-before-function-paren': 0,
     'no-console': 0,
     'no-tabs': 'error',
+    'no-underscore-dangle': 0,
     indent: 0,
     'object-curly-newline': 0,
   },
