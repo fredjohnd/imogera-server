@@ -41,10 +41,10 @@ const login = async function(req, res) {
 
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.send('No user found');
+    if (!user) return res.send('No user found or invalid password');
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) res.send('Invalid username/password');
+    if (!isValid) return res.send('No user found or invalid password');
 
     const token = createJWToken({
       sessionData: { id: user._id, name: user.name, email: user.email },
@@ -52,7 +52,6 @@ const login = async function(req, res) {
 
     res.append('authorization', `Bearer ${token}`);
     return res.send(user);
-    // return res.send(user);
   } catch (error) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
   }
