@@ -4,7 +4,7 @@ const PUBLIC_ENDPOINTS = ['/', '/account/login', '/account/register'];
 
 module.exports = async (req, res, next) => {
   // Do not validate endpoints that do not require auth
-  if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) next();
+  if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) return next();
 
   try {
     const { username } = req.headers;

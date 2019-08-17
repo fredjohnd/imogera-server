@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 // Connection URL
-const user = 'devdev';
-const pass = 'rweuhg9fe08';
-const connectionUrl = `mongodb://${user}:${pass}@ds263127.mlab.com:63127/heroku_qf7r2ppc`;
+const user = process.env.DB_USERNAME;
+const pass = process.env.DB_PASSWORD;
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+const connectionUrl = `mongodb://${user}:${pass}@${dbHost}/${dbName}`;
 
 mongoose.connect(connectionUrl, { useNewUrlParser: true });
 const db = mongoose.connection;

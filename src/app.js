@@ -11,6 +11,7 @@ const app = express();
 app.use(require('./middlewares/headers'));
 
 if (process.env.USE_DEV_AUTHENTICATION) {
+  console.log('Using dev authentication');
   app.use(require('./middlewares/devTokenValidator'));
 } else {
   app.use(require('./middlewares/tokenValidator'));
