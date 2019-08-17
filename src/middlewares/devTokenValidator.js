@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
   if (PUBLIC_ENDPOINTS.indexOf(req.path) !== -1) return next();
 
   try {
-    const { username } = req.headers;
+    const username = req.headers['username'];
     const user = await User.findOne({ username });
     if (!user) {
       return res
