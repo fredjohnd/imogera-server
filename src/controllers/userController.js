@@ -1,8 +1,8 @@
 const HttpStatus = require('http-status-codes');
 const User = require('../models/user');
-
+const userFetcher = require('../services/user-fetcher-service');
 exports.user_list = async function (req, res) {
-  User.find({})
+  userFetcher.fetchAllUsers
     .then((users) => {
       res.send(users);
     })
@@ -13,7 +13,6 @@ exports.user_list = async function (req, res) {
 
 exports.user_add = function (req, res) {
   const user = new User(req.body);
-
   user
     .save()
     .then(() => {
@@ -39,7 +38,7 @@ exports.user_delete = function (req, res) {
 exports.user_detail = function (req, res) {
   const { id } = req.params;
 
-  User.findById(id)
+  userFetcher.fetchUserById(id)
     .then((user) => {
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).send();

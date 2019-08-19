@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   res.header('X-HTTP-Method-Override');
   res.header('Content-Type');
   res.header('Accept');
-
+  res.header("Access-Control-Expose-Headers", "X-Token");
   // intercepts OPTIONS method
   if ('OPTIONS' === req.method) {
     res.send(200);

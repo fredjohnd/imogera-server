@@ -6,7 +6,7 @@ moment.locale('pt-pt');
 exports.condominio_list = async function (req, res) {
 
   try {
-    const docs = await Condominio.find({});
+    const docs = await Condominio.find({ owner: req.decoded.id });
     return res.send(docs.map(d => d.toJSON({ hide: 'owner' })));
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();

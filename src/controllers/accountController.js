@@ -5,38 +5,47 @@ const { createJWToken, verifyJWTToken } = require('../libs/auth');
 
 const saltRounds = 10;
 
-const userNameExists = async function(username) {
+const userNameExists = async function (username) {
   return User.findOne({ username }).countDocuments();
 };
 
-const emailAddressExists = async function(email) {
+const emailAddressExists = async function (email) {
   return User.findOne({ email }).countDocuments();
 };
 
-const register = async function(req, res) {
-  const { name, username, password, email } = req.body;
+const register = async function (req, res) {
+  const { name, username, password, email, generateToken } = req.body;
 
-  const userExists = await userNameExists(username);
-  if (userExists) return res.send('Username already exists');
+  // const userExists = await userNameExists(username);
+  // if (userExists) return res.send('Username already exists');
 
-  const emailExists = await emailAddressExists(email);
-  if (emailExists) {
-    return res.send(
-      'Email already registered. Please login or click forgot Password',
-    );
-  }
+  // const emailExists = await emailAddressExists(email);
+  // if (emailExists) {
+  //   return res.send(
+  //     'Email already registered. Please login or click forgot Password',
+  //   );
+  // }
 
   try {
     const hash = await bcrypt.hash(password, saltRounds);
     const user = new User({ name, username, email, password: hash });
     await user.save();
+
+    if (generateToken) {
+      const token = createJWToken({
+        sessionData: { id: user._id, name: user.name, email: user.email },
+      });
+
+      res.append('X-Token', `Bearer ${token}`);
+    }
+
     return res.send(user);
   } catch (error) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
   }
 };
 
-const login = async function(req, res) {
+const login = async function (req, res) {
   const { username, password } = req.body;
 
   try {
@@ -50,20 +59,30 @@ const login = async function(req, res) {
       sessionData: { id: user._id, name: user.name, email: user.email },
     });
 
-    res.append('authorization', `Bearer ${token}`);
+    res.append('X-Token', `Bearer ${token}`);
     return res.send(user);
   } catch (error) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
   }
 };
 
-const logout = function(req, res) {
+const getProfile = async function (req, res) {
+  const userId = req.decoded.id;
+  try {
+    const user = await User.findById(userId);
+    return res.send(user);
+  } catch (error) {
+    return res.status(HttpStatus.UNAUTHORIZED).send();
+  }
+};
+
+const logout = function (req, res) {
   if (!req.decoded) return res.status(401).send('Session invalid');
   return res.send('User logged out');
 };
 
-const confirm = function(req, res) {
+const confirm = function (req, res) {
   res.send('Not Implemented Confirm');
 };
 
-module.exports = { register, login, logout, confirm };
+module.exports = { register, login, logout, confirm, getProfile };
