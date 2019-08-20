@@ -50,10 +50,10 @@ const login = async function (req, res) {
 
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.send('No user found or invalid password');
+    if (!user) return res.send({ error: 'No user found or invalid password' });
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return res.send('No user found or invalid password');
+    if (!isValid) return res.send({ error: 'No user found or invalid password' });
 
     const token = createJWToken({
       sessionData: { id: user._id, name: user.name, email: user.email },
