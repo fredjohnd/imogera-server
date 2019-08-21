@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
 
     await jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) return res.status(401).json({ error: true, message: 'Unauthorized access.' });
-      req.decoded = decoded.data;
+      req.user = decoded.data;
       return next();
     });
   } catch (error) {

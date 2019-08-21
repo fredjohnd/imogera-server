@@ -2,49 +2,52 @@ const HttpStatus = require('http-status-codes');
 const User = require('../models/user');
 const userFetcher = require('../services/user-fetcher-service');
 exports.user_list = async function (req, res) {
-  userFetcher.fetchAllUsers
-    .then((users) => {
-      res.send(users);
-    })
-    .catch(() => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
-    });
+
+  try {
+    const users = await userFetcher.fetchAllUsers();
+    res.send(users);
+
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
+  }
+
 };
 
-exports.user_add = function (req, res) {
-  const user = new User(req.body);
-  user
-    .save()
-    .then(() => {
-      res.send(user);
-    })
-    .catch(() => {
-      res.status(HttpStatus.BAD_REQUEST).send();
-    });
+exports.user_add = async function (req, res) {
+
+  try {
+    const user = new User(req.body);
+    const savedUser = await user.save();
+    res.send(savedUser);
+  } catch (error) {
+    res.status(HttpStatus.BAD_REQUEST).send();
+  }
 };
 
-exports.user_delete = function (req, res) {
+//todo: remove success message or send a proper formatted json
+exports.user_delete = async function (req, res) {
   const { id } = req.params;
 
-  User.findByIdAndDelete(id)
-    .then(() => {
-      res.status(HttpStatus.OK).send('OK');
-    })
-    .catch(() => {
-      res.status(HttpStatus.BAD_REQUEST).send();
-    });
+  try {
+    await User.findByIdAndDelete(id);
+    res.status(HttpStatus.OK).send('OK');
+  } catch (error) {
+    res.status(HttpStatus.BAD_REQUEST).send();
+  }
 };
 
-exports.user_detail = function (req, res) {
+exports.user_detail = async function (req, res) {
   const { id } = req.params;
 
-  userFetcher.fetchUserById(id)
-    .then((user) => {
-      if (!user) {
-        return res.status(HttpStatus.NOT_FOUND).send();
-      }
+  try {
+    const user = await userFetcher.fetchUserById(id);
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
 
-      return res.send(user);
-    })
-    .catch(() => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send());
+    return res.send(user);
+
+  } catch (error) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+  }
 };

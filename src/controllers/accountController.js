@@ -45,6 +45,7 @@ const register = async function (req, res) {
   }
 };
 
+//todo: generate proper json errors
 const login = async function (req, res) {
   const { username, password } = req.body;
 
@@ -67,7 +68,7 @@ const login = async function (req, res) {
 };
 
 const getProfile = async function (req, res) {
-  const userId = req.decoded.id;
+  const userId = req.user.id;
   try {
     const user = await User.findById(userId);
     return res.send(user);
@@ -77,7 +78,7 @@ const getProfile = async function (req, res) {
 };
 
 const logout = function (req, res) {
-  if (!req.decoded) return res.status(401).send('Session invalid');
+  if (!req.user) return res.status(401).send('Session invalid');
   return res.send('User logged out');
 };
 

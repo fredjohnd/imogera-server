@@ -6,7 +6,7 @@ moment.locale('pt-pt');
 exports.condominio_list = async function (req, res) {
 
   try {
-    const docs = await Condominio.find({ owner: req.decoded.id });
+    const docs = await Condominio.find({ owner: req.user.id });
     return res.send(docs.map(d => d.toJSON({ hide: 'owner' })));
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
@@ -17,9 +17,7 @@ exports.condominio_list = async function (req, res) {
 exports.condominio_add = async function (req, res) {
   const condominio = new Condominio(req.body);
 
-  const sessionData = req.decoded;
-
-  condominio.owner = sessionData.id;
+  condominio.owner = req.user.id;
   condominio.created_at = moment().toISOString();
 
   try {
@@ -31,6 +29,7 @@ exports.condominio_add = async function (req, res) {
 
 };
 
+//todo: proper json error message
 exports.condominio_delete = async function (req, res) {
   const { id } = req.params;
 
@@ -44,12 +43,14 @@ exports.condominio_delete = async function (req, res) {
   }
 };
 
+//todo: proper json error message
 exports.condominio_detail = async function (req, res) {
   const { id } = req.params;
 
   try {
     const doc = await Condominio.findById(id);
     if (!doc) return res.status(HttpStatus.NOT_FOUND).send();
+
     return res.send(doc.toJSON({ hide: 'owner' }));
   } catch (error) {
     return res

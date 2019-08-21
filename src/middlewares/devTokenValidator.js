@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
         .status(401)
         .send('Header "username" not set or user not found in DB');
     }
-    req.decoded = user;
+    req.user = user;
     next();
   } catch (error) {
     return res.status(403).send({
