@@ -17,6 +17,7 @@ exports.user_add = async function (req, res) {
 
   try {
     const user = new User(req.body);
+    user.member_of = [];
     const savedUser = await user.save();
     res.send(savedUser);
   } catch (error) {

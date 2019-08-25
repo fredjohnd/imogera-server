@@ -8,7 +8,7 @@ const User = mongoose.model('User', {
   },
   username: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
   },
   email: {
@@ -18,14 +18,22 @@ const User = mongoose.model('User', {
   },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
+
+  phone_number: {
+    type: String,
+  },
+
+  member_of: {
+    type: [String],
+  }
 });
 
 // Removes __v and password property and any properties passed in options.hide
 const { schema } = User;
 if (!schema.options.toJSON) schema.options.toJSON = {};
-schema.options.toJSON.transform = function(doc, ret, options) {
+schema.options.toJSON.transform = function (doc, ret, options) {
   /* eslint-disable no-underscore-dangle */
   const data = ret;
   delete data.__v;

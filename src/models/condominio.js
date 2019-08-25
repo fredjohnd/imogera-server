@@ -1,28 +1,40 @@
 const mongoose = require('mongoose');
-
 const Condominio = mongoose.model('Condominio', {
+
   name: {
     type: String,
     required: true,
     trim: true,
   },
+
   address: {
     type: String,
     required: true,
     trim: true,
   },
+
   city: {
     type: String,
     required: true,
     trim: true,
   },
-  number_members: {
+
+  member_capacity: {
     type: Number,
     required: true,
   },
-  owner: {
+
+  number_incidents: {
+    type: Number,
+  },
+
+  owner_id: {
     type: String,
     required: true,
+  },
+
+  members_ids: {
+    type: [String]
   },
 
   created_at: {

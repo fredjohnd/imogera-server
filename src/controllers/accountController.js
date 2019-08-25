@@ -71,6 +71,7 @@ const getProfile = async function (req, res) {
   const userId = req.user.id;
   try {
     const user = await User.findById(userId);
+    if (!user) return res.status(HttpStatus.UNAUTHORIZED).send();
     return res.send(user);
   } catch (error) {
     return res.status(HttpStatus.UNAUTHORIZED).send();
