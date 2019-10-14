@@ -67,6 +67,12 @@ exports.condominio_add_member = async function (req, res) {
 
       // Add user to condominio
       const userId = user.id;
+
+      const alreadyAdded = cond.members_ids.find(id => userId);
+      if (alreadyAdded) {
+        return res.send();
+      }
+
       cond.members_ids.push(userId);
       await cond.save();
 
@@ -74,7 +80,15 @@ exports.condominio_add_member = async function (req, res) {
       user.member_of.push(cond.id);
       await user.save();
 
-      return res.send(cond);
+      const docMembers = await userFetcherService.fetchMultipleUsersById(cond.members_ids);
+      cond.members = docMembers;
+      const data = {
+        model: cond.toJSON({ hide: 'owner_id' }),
+        members: docMembers
+      };
+
+      return res.send(data);
+
     } else {
       const newUser = new User({
         name,
@@ -86,7 +100,15 @@ exports.condominio_add_member = async function (req, res) {
       await newUser.save();
       cond.members_ids.push(newUser.id);
       await cond.save();
-      return res.send(cond);
+
+      const docMembers = await userFetcherService.fetchMultipleUsersById(cond.members_ids);
+      cond.members = docMembers;
+      const data = {
+        model: cond.toJSON({ hide: 'owner_id' }),
+        members: docMembers
+      };
+      return res.send(data);
+
     }
   } catch (error) {
     return res.status(HttpStatus.BAD_REQUEST).send(error);
